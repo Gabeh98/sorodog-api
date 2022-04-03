@@ -9,10 +9,10 @@ export default class DogsController {
 
   public async create({}: HttpContextContract) {}
 
-  public async store({ request }: HttpContextContract) {
+  public async store({ request, response }: HttpContextContract) {
     const data = request.only(['name', 'description', 'active'])
-    const dogs = await Dogs.create(data)
-    return dogs
+    await Dogs.create(data)
+    return response.status(201).json({"message":"Data created"})
   }
 
   public async show({ params }: HttpContextContract) {
@@ -22,17 +22,17 @@ export default class DogsController {
 
   public async edit({}: HttpContextContract) {}
 
-  public async update({ request, params }: HttpContextContract) {
+  public async update({ request, params, response }: HttpContextContract) {
     const dogs = await Dogs.findOrFail(params.id)
     const data = request.only(['name', 'description', 'active'])
     dogs.merge(data)
     await dogs.save()
-    return dogs
+    return response.status(200).json({"message":"Data updated"})
   }
 
-  public async destroy({ params }: HttpContextContract) {
+  public async destroy({ params, response }: HttpContextContract) {
     const dogs = await Dogs.findOrFail(params.id)
     await dogs.delete()
-    return dogs
+    return response.status(200).json({"message":"Data has been deleted"})
   }
 }
